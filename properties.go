@@ -1,12 +1,58 @@
 // properties: This package implements access to .properties file
-// See further details on http://en.wikipedia.org/wiki/.properties
+//
+// .properties is a file extension for files mainly used in Java related
+// technologies to store the configurable parameters of an application.
+// They can also be used for storing strings for Internationalization and
+// localization; these are known as Property Resource Bundles.
+//
+// Each parameter is stored as a pair of strings, one storing the name of
+// the parameter (called the key), and the other storing the value.
+//
+// Each line in a .properties file normally stores a single property.
+// Several formats are possible for each line, including key=value,
+// key = value, key:value, and key value.
+//
+// .properties files can use the number sign (#) or the exclamation mark (!)
+// as the first non blank character in a line to denote that all text following
+// it is a comment. The backwards slash is used to escape a character.
+// An example of a properties file is provided below.
+// <code>
+// # You are reading the ".properties" entry.
+// ! The exclamation mark can also mark text as comments.
+// website = http://en.wikipedia.org/
+// language = English
+// # The backslash below tells the application to continue reading
+// # the value onto the next line.
+// message = Welcome to \
+//           Wikipedia!
+// # Add spaces to the key
+// key\ with\ spaces = This is the value that could be looked up with the \
+// key "key with spaces".
+// # Empty lines are skipped
+//
+// # Unicode
+// unicode=\u041f\u0440\u0438\u0432\u0435\u0442, \u0421\u043e\u0432\u0430!
+// # Comment
+// </code>
+//
+// In the example above, website would be a key, and its corresponding 
+// value would be http://en.wikipedia.org/. While the number sign and the
+// exclamation mark marks text as comments, it has no effect when it is part
+// of a property. Thus, the key message has the value Welcome to Wikipedia!
+// and not Welcome to Wikipedia. Note also that all of the whitespace in
+// front of Wikipedia! is excluded completely.
+//
+// The encoding of a .properties file is ISO-8859-1, also known as Latin-1. All non-Latin-1 characters must be entered by using Unicode escape characters, e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode character set. This allows for using .properties files as resource bundles for localization. A non-Latin-1 text file can be converted to a correct .properties file by using the native2ascii tool that is shipped with the JDK or by using a tool, such as po2prop[1], that manages the transformation from a bilingual localization format into .properties escaping.
+//
+// From Wikipedia, the free encyclopedia
+// http://en.wikipedia.org/wiki/.properties
 package properties
 
 import "io"
 import "os"
 import "utf8"
 
-// Error represents an unexpected I/O behavior.
+// Error represents an unexpected behavior.
 type Error struct {
 	os.ErrorString;
 }
@@ -78,6 +124,7 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 	return props, err;
 }
 
+// Decodes \t,\n,\r,\f and \uXXXX characters in string
 func decodeString(in string) (string, os.Error) {
 	out := make([]byte, len(in));
 	o := -1;
@@ -140,12 +187,9 @@ func decodeString(in string) (string, os.Error) {
 	return string(out), nil;
 }
 
-/* Read in a "logical line" from an InputStream/Reader, skip all comment
- * and blank lines and filter out those leading whitespace characters
- * (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
- * Method returns the char length of the "logical line" and stores
- * the line in "buffer".
- */
+// Read in a "logical line" from an InputStream/Reader, skip all comment
+// and blank lines and filter out those leading whitespace characters
+// (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
 type lineReader struct {
 	reader		io.Reader;
 	buffer		[]byte;
@@ -166,6 +210,7 @@ func newLineReader(r io.Reader) *lineReader {
 	return n;
 }
 
+// Returns the "logical line" from given reader
 func (lr *lineReader) readLine() (line string, e os.Error) {
 	if lr.exhausted {
 		return "", os.EOF
