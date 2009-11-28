@@ -11,9 +11,15 @@ const _testFilename = "test.properties"
 func TestLoad(t *testing.T) {
 	f, err := os.Open(_testFilename, os.O_RDONLY, 0);
 	if err != nil {
-		t.Fatal("failed to open %s: ", _testFilename, err);
+		t.Fatalf("failed to open %s: %s", _testFilename, err);
 		return;
 	}
 	defer f.Close();
-	Load(f);
+	props, loadErr := Load(f);
+	if loadErr != nil {
+		t.Fatalf("failed to load %s: %s", _testFilename, loadErr)
+	}
+	//for i := 0; i < len(props); i++ {
+	t.Logf("%v\n", props);
+	//}
 }
