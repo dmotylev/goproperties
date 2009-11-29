@@ -35,7 +35,7 @@
 // # Comment
 // </code>
 //
-// In the example above, website would be a key, and its corresponding 
+// In the example above, website would be a key, and its corresponding
 // value would be http://en.wikipedia.org/. While the number sign and the
 // exclamation mark marks text as comments, it has no effect when it is part
 // of a property. Thus, the key message has the value Welcome to Wikipedia!
@@ -69,10 +69,10 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 	for {
 		s, e := lr.readLine();
 		if e == os.EOF {
-			break;	
+			break
 		}
 		if e != nil {
-			return nil, e;	
+			return nil, e
 		}
 
 		keyLen := 0;
@@ -127,9 +127,8 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 // Decodes \t,\n,\r,\f and \uXXXX characters in string
 func decodeString(in string) (string, os.Error) {
 	out := make([]byte, len(in));
-	o := -1;
+	o := 0;
 	for i := 0; i < len(in); {
-		o++;
 		if in[i] == '\\' {
 			i++;
 			switch in[i] {
@@ -161,30 +160,36 @@ func decodeString(in string) (string, os.Error) {
 				continue;
 			case 't':
 				out[o] = '\t';
+				o++;
 				i++;
 				continue;
 			case 'r':
 				out[o] = '\r';
+				o++;
 				i++;
 				continue;
 			case 'n':
 				out[o] = '\n';
+				o++;
 				i++;
 				continue;
 			case 'f':
 				out[o] = '\f';
+				o++;
 				i++;
 				continue;
 			}
 			out[o] = in[i];
+			o++;
 			i++;
 			continue;
 		}
 		out[o] = in[i];
+		o++;
 		i++;
 	}
 
-	return string(out), nil;
+	return string(out[0:o]), nil;
 }
 
 // Read in a "logical line" from an InputStream/Reader, skip all comment

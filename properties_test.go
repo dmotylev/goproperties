@@ -20,19 +20,15 @@ func TestLoad(t *testing.T) {
 		t.Fatalf("failed to load %s: %s", _testFilename, loadErr)
 	}
 
-	if props["website"] != "http://en.wikipedia.org/" {
-		t.Error("website")
-	}
-	if props["language"] != "English" {
-		t.Error("language")
-	}
-	if props["message"] != "Welcome to Wikipedia!" {
-		t.Error("message")
-	}
-	if props["unicode"] != "\u041f\u0440\u0438\u0432\u0435\u0442, \u0421\u043e\u0432\u0430!" {
-		t.Error("unicode")
-	}
-	if props["key with spaces"] != "This is the value that could be looked up with the key \"key with spaces\"." {
-		t.Error("key with spaces")
+	testValue(t, "website", "http://en.wikipedia.org/", props["website"]);
+	testValue(t, "language", "English", props["language"]);
+	testValue(t, "message", "Welcome to Wikipedia!", props["message"]);
+	testValue(t, "unicode", "Привет, Сова!", props["unicode"]);
+	testValue(t, "key with spaces", "This is the value that could be looked up with the key \"key with spaces\".", props["key with spaces"]);
+}
+
+func testValue(t *testing.T, key, expected, value string) {
+	if value != expected {
+		t.Errorf("key     : '%s'\nexpected: '%s'\nvalue   : '%s'\n", key, expected, value);
 	}
 }
