@@ -1,4 +1,4 @@
-// properties: This package implements access to .properties file
+// properties: This package implements read/write operations on .properties file
 //
 // .properties is a file extension for files mainly used in Java related
 // technologies to store the configurable parameters of an application.

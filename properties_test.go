@@ -1,4 +1,4 @@
-// test program for the props package
+// test program for the properties package
 package properties
 
 import (
