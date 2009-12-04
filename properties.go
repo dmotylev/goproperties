@@ -42,7 +42,14 @@
 // and not Welcome to Wikipedia. Note also that all of the whitespace in
 // front of Wikipedia! is excluded completely.
 //
-// The encoding of a .properties file is ISO-8859-1, also known as Latin-1. All non-Latin-1 characters must be entered by using Unicode escape characters, e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode character set. This allows for using .properties files as resource bundles for localization. A non-Latin-1 text file can be converted to a correct .properties file by using the native2ascii tool that is shipped with the JDK or by using a tool, such as po2prop[1], that manages the transformation from a bilingual localization format into .properties escaping.
+// The encoding of a .properties file is ISO-8859-1, also known as Latin-1.
+// All non-Latin-1 characters must be entered by using Unicode escape characters, 
+// e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode
+// character set. This allows for using .properties files as resource bundles for
+// localization. A non-Latin-1 text file can be converted to a correct .properties
+// file by using the native2ascii tool that is shipped with the JDK or by using
+// a tool, such as po2prop, that manages the transformation from a bilingual
+// localization format into .properties escaping.
 //
 // From Wikipedia, the free encyclopedia
 // http://en.wikipedia.org/wiki/.properties
