@@ -43,7 +43,7 @@
 // front of Wikipedia! is excluded completely.
 //
 // The encoding of a .properties file is ISO-8859-1, also known as Latin-1.
-// All non-Latin-1 characters must be entered by using Unicode escape characters, 
+// All non-Latin-1 characters must be entered by using Unicode escape characters,
 // e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode
 // character set. This allows for using .properties files as resource bundles for
 // localization. A non-Latin-1 text file can be converted to a correct .properties
@@ -61,7 +61,7 @@ import "utf8"
 
 // Error represents an unexpected behavior.
 type Error struct {
-	os.ErrorString;
+	os.ErrorString
 }
 
 // ErrMalformedUtf8Encoding means that it was not possible to convert \uXXXX
@@ -70,11 +70,11 @@ var ErrMalformedUtf8Encoding os.Error = &Error{"malformed \\uxxxx encoding"}
 
 // Reads key value pairs from reader and returns map[string]string
 func Load(src io.Reader) (props map[string]string, err os.Error) {
-	err = nil;
-	lr := newLineReader(src);
-	props = make(map[string]string);
+	err = nil
+	lr := newLineReader(src)
+	props = make(map[string]string)
 	for {
-		s, e := lr.readLine();
+		s, e := lr.readLine()
 		if e == os.EOF {
 			break
 		}
@@ -82,21 +82,22 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 			return nil, e
 		}
 
-		keyLen := 0;
-		precedingBackslash := false;
-		hasSep := false;
-		valueStart := len(s);
+		keyLen := 0
+		precedingBackslash := false
+		hasSep := false
+		valueStart := len(s)
 
 		for keyLen < len(s) {
-			c := s[keyLen];
+			c := s[keyLen]
 
 			if (c == '=' || c == ':') && !precedingBackslash {
-				valueStart = keyLen + 1;
-				hasSep = true;
-				break;
-			} else if (c == ' ' || c == '\t' || c == '\f') && !precedingBackslash {
-				valueStart = keyLen + 1;
-				break;
+				valueStart = keyLen + 1
+				hasSep = true
+				break
+			}
+			if (c == ' ' || c == '\t' || c == '\f') && !precedingBackslash {
+				valueStart = keyLen + 1
+				break
 			}
 			if c == '\\' {
 				precedingBackslash = !precedingBackslash
@@ -104,11 +105,11 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 				precedingBackslash = false
 			}
 
-			keyLen++;
+			keyLen++
 		}
 
 		for valueStart < len(s) {
-			c := s[valueStart];
+			c := s[valueStart]
 			if c != ' ' && c != '\t' && c != '\f' {
 				if !hasSep && (c == '=' || c == ':') {
 					hasSep = true
@@ -116,110 +117,110 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 					break
 				}
 			}
-			valueStart++;
+			valueStart++
 		}
-		key, err := decodeString(s[0:keyLen]);
+		key, err := decodeString(s[0:keyLen])
 		if err != nil {
 			return nil, err
 		}
-		value, err := decodeString(s[valueStart:len(s)]);
+		value, err := decodeString(s[valueStart:len(s)])
 		if err != nil {
 			return nil, err
 		}
-		props[key] = value;
+		props[key] = value
 	}
-	return props, err;
+	return props, err
 }
 
 // Decodes \t,\n,\r,\f and \uXXXX characters in string
 func decodeString(in string) (string, os.Error) {
-	out := make([]byte, len(in));
-	o := 0;
+	out := make([]byte, len(in))
+	o := 0
 	for i := 0; i < len(in); {
 		if in[i] == '\\' {
-			i++;
+			i++
 			switch in[i] {
 			case 'u':
-				i++;
-				rune := 0;
+				i++
+				rune := 0
 				for j := 0; j < 4; j++ {
 					switch {
 					case in[i] >= '0' && in[i] <= '9':
-						rune = (rune << 4) + int(in[i]) - '0';
-						break;
+						rune = (rune << 4) + int(in[i]) - '0'
+						break
 					case in[i] >= 'a' && in[i] <= 'f':
-						rune = (rune << 4) + 10 + int(in[i]) - 'a';
-						break;
+						rune = (rune << 4) + 10 + int(in[i]) - 'a'
+						break
 					case in[i] >= 'A' && in[i] <= 'F':
-						rune = (rune << 4) + 10 + int(in[i]) - 'A';
-						break;
+						rune = (rune << 4) + 10 + int(in[i]) - 'A'
+						break
 					default:
 						return "", ErrMalformedUtf8Encoding
 					}
-					i++;
+					i++
 				}
-				bytes := make([]byte, utf8.RuneLen(rune));
-				bytesWritten := utf8.EncodeRune(rune, bytes);
+				bytes := make([]byte, utf8.RuneLen(rune))
+				bytesWritten := utf8.EncodeRune(rune, bytes)
 				for j := 0; j < bytesWritten; j++ {
-					out[o] = bytes[j];
-					o++;
+					out[o] = bytes[j]
+					o++
 				}
-				continue;
+				continue
 			case 't':
-				out[o] = '\t';
-				o++;
-				i++;
-				continue;
+				out[o] = '\t'
+				o++
+				i++
+				continue
 			case 'r':
-				out[o] = '\r';
-				o++;
-				i++;
-				continue;
+				out[o] = '\r'
+				o++
+				i++
+				continue
 			case 'n':
-				out[o] = '\n';
-				o++;
-				i++;
-				continue;
+				out[o] = '\n'
+				o++
+				i++
+				continue
 			case 'f':
-				out[o] = '\f';
-				o++;
-				i++;
-				continue;
+				out[o] = '\f'
+				o++
+				i++
+				continue
 			}
-			out[o] = in[i];
-			o++;
-			i++;
-			continue;
+			out[o] = in[i]
+			o++
+			i++
+			continue
 		}
-		out[o] = in[i];
-		o++;
-		i++;
+		out[o] = in[i]
+		o++
+		i++
 	}
 
-	return string(out[0:o]), nil;
+	return string(out[0:o]), nil
 }
 
 // Read in a "logical line" from an InputStream/Reader, skip all comment
 // and blank lines and filter out those leading whitespace characters
 // (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
 type lineReader struct {
-	reader		io.Reader;
-	buffer		[]byte;
-	lineBuffer	[]byte;
-	limit		int;
-	offset		int;
-	exhausted	bool;
+	reader     io.Reader
+	buffer     []byte
+	lineBuffer []byte
+	limit      int
+	offset     int
+	exhausted  bool
 }
 
 func newLineReader(r io.Reader) *lineReader {
-	n := new(lineReader);
-	n.reader = r;
-	n.buffer = make([]byte, 1024);
-	n.lineBuffer = make([]byte, 1024);
-	n.limit = 0;
-	n.offset = 0;
-	n.exhausted = false;
-	return n;
+	n := new(lineReader)
+	n.reader = r
+	n.buffer = make([]byte, 1024)
+	n.lineBuffer = make([]byte, 1024)
+	n.limit = 0
+	n.offset = 0
+	n.exhausted = false
+	return n
 }
 
 // Returns the "logical line" from given reader
@@ -227,44 +228,44 @@ func (lr *lineReader) readLine() (line string, e os.Error) {
 	if lr.exhausted {
 		return "", os.EOF
 	}
-	nextCharIndex := 0;
-	char := byte(0);
+	nextCharIndex := 0
+	char := byte(0)
 
-	skipLF := false;
-	skipWhiteSpace := true;
-	appendedLineBegin := false;
-	isNewLine := true;
-	isCommentLine := false;
-	precedingBackslash := false;
+	skipLF := false
+	skipWhiteSpace := true
+	appendedLineBegin := false
+	isNewLine := true
+	isCommentLine := false
+	precedingBackslash := false
 
 	for {
 		if lr.offset >= lr.limit {
-			lr.limit, e = io.ReadFull(lr.reader, lr.buffer);
-			lr.offset = 0;
+			lr.limit, e = io.ReadFull(lr.reader, lr.buffer)
+			lr.offset = 0
 			if e == os.EOF {
-				lr.exhausted = true;
+				lr.exhausted = true
 				if isCommentLine {
 					return "", os.EOF
 				}
-				return string(lr.lineBuffer[0:nextCharIndex]), nil;
+				return string(lr.lineBuffer[0:nextCharIndex]), nil
 			}
 			if e == io.ErrUnexpectedEOF {
 				if isCommentLine {
 					return "", os.EOF
 				}
-				continue;
+				continue
 			}
 			if e != nil {
-				lr.exhausted = true;
-				return "", e;
+				lr.exhausted = true
+				return "", e
 			}
 		}
 
-		char = lr.buffer[lr.offset];
-		lr.offset++;
+		char = lr.buffer[lr.offset]
+		lr.offset++
 
 		if skipLF {
-			skipLF = false;
+			skipLF = false
 			if char == '\n' {
 				continue
 			}
@@ -277,57 +278,57 @@ func (lr *lineReader) readLine() (line string, e os.Error) {
 			if !appendedLineBegin && (char == '\r' || char == '\n') {
 				continue
 			}
-			skipWhiteSpace = false;
-			appendedLineBegin = false;
+			skipWhiteSpace = false
+			appendedLineBegin = false
 		}
 
 		if isNewLine {
-			isNewLine = false;
+			isNewLine = false
 			if char == '#' || char == '!' {
-				isCommentLine = true;
-				continue;
+				isCommentLine = true
+				continue
 			}
 		}
 
 		if char != '\n' && char != '\r' {
-			lr.lineBuffer[nextCharIndex] = char;
-			nextCharIndex++;
+			lr.lineBuffer[nextCharIndex] = char
+			nextCharIndex++
 			if nextCharIndex == len(lr.lineBuffer) {
-				newBuffer := make([]byte, len(lr.lineBuffer)*2);
+				newBuffer := make([]byte, len(lr.lineBuffer)*2)
 				for i, x := range lr.lineBuffer {
 					newBuffer[i] = x
 				}
-				lr.lineBuffer = newBuffer;
+				lr.lineBuffer = newBuffer
 			}
 			//flip the preceding backslash flag
-			precedingBackslash = char == '\\' && !precedingBackslash;
+			precedingBackslash = char == '\\' && !precedingBackslash
 		} else {
 			// reached EOL
 			if isCommentLine || nextCharIndex == 0 {
-				isCommentLine = false;
-				isNewLine = true;
-				skipWhiteSpace = true;
-				nextCharIndex = 0;
-				continue;
+				isCommentLine = false
+				isNewLine = true
+				skipWhiteSpace = true
+				nextCharIndex = 0
+				continue
 			}
 			if lr.offset >= lr.limit {
-				lr.limit, e = io.ReadFull(lr.reader, lr.buffer);
-				lr.offset = 0;
+				lr.limit, e = io.ReadFull(lr.reader, lr.buffer)
+				lr.offset = 0
 				if e == os.EOF || e == io.ErrUnexpectedEOF {
-					lr.exhausted = true;
-					return string(lr.lineBuffer[0:nextCharIndex]), nil;
+					lr.exhausted = true
+					return string(lr.lineBuffer[0:nextCharIndex]), nil
 				}
 				if e != nil {
-					lr.exhausted = true;
-					return "", e;
+					lr.exhausted = true
+					return "", e
 				}
 			}
 			if precedingBackslash {
-				nextCharIndex--;
+				nextCharIndex--
 				//skip the leading whitespace characters in following line
-				skipWhiteSpace = true;
-				appendedLineBegin = true;
-				precedingBackslash = false;
+				skipWhiteSpace = true
+				appendedLineBegin = true
+				precedingBackslash = false
 				if char == '\r' {
 					skipLF = true
 				}
@@ -337,5 +338,5 @@ func (lr *lineReader) readLine() (line string, e os.Error) {
 		}
 	}
 
-	return "", nil;
+	return "", nil
 }
