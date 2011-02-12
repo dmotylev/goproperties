@@ -160,7 +160,7 @@ func decodeString(in string) (string, os.Error) {
 					i++
 				}
 				bytes := make([]byte, utf8.RuneLen(rune))
-				bytesWritten := utf8.EncodeRune(rune, bytes)
+				bytesWritten := utf8.EncodeRune(bytes, rune)
 				for j := 0; j < bytesWritten; j++ {
 					out[o] = bytes[j]
 					o++
