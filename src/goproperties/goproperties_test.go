@@ -1,4 +1,3 @@
-// test program for the properties package
 package goproperties
 
 import (
