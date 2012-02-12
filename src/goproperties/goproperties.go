@@ -1,4 +1,4 @@
-// properties: This package implements read/write operations on .properties file
+// goproperties: This package implements read/write operations on .properties file
 //
 // .properties is a file extension for files mainly used in Java related
 // technologies to store the configurable parameters of an application.
@@ -53,29 +53,26 @@
 //
 // From Wikipedia, the free encyclopedia
 // http://en.wikipedia.org/wiki/.properties
-package properties
+package goproperties
 
-import "io"
-import "os"
-import "utf8"
-
-// Error represents an unexpected behavior.
-type Error struct {
-	os.ErrorString
-}
+import (
+	"errors"
+	"io"
+	"unicode/utf8"
+)
 
 // ErrMalformedUtf8Encoding means that it was not possible to convert \uXXXX
 // string to utf8 rune.
-var ErrMalformedUtf8Encoding os.Error = &Error{"malformed \\uxxxx encoding"}
+var ErrMalformedUtf8Encoding = errors.New("malformed \\uxxxx encoding")
 
 // Reads key value pairs from reader and returns map[string]string
-func Load(src io.Reader) (props map[string]string, err os.Error) {
+func Load(src io.Reader) (props map[string]string, err error) {
 	err = nil
 	lr := newLineReader(src)
 	props = make(map[string]string)
 	for {
 		s, e := lr.readLine()
-		if e == os.EOF {
+		if e == io.EOF {
 			break
 		}
 		if e != nil {
@@ -133,7 +130,7 @@ func Load(src io.Reader) (props map[string]string, err os.Error) {
 }
 
 // Decodes \t,\n,\r,\f and \uXXXX characters in string
-func decodeString(in string) (string, os.Error) {
+func decodeString(in string) (string, error) {
 	out := make([]byte, len(in))
 	o := 0
 	for i := 0; i < len(in); {
@@ -142,25 +139,25 @@ func decodeString(in string) (string, os.Error) {
 			switch in[i] {
 			case 'u':
 				i++
-				rune := 0
+				utf8rune := 0
 				for j := 0; j < 4; j++ {
 					switch {
 					case in[i] >= '0' && in[i] <= '9':
-						rune = (rune << 4) + int(in[i]) - '0'
+						utf8rune = (utf8rune << 4) + int(in[i]) - '0'
 						break
 					case in[i] >= 'a' && in[i] <= 'f':
-						rune = (rune << 4) + 10 + int(in[i]) - 'a'
+						utf8rune = (utf8rune << 4) + 10 + int(in[i]) - 'a'
 						break
 					case in[i] >= 'A' && in[i] <= 'F':
-						rune = (rune << 4) + 10 + int(in[i]) - 'A'
+						utf8rune = (utf8rune << 4) + 10 + int(in[i]) - 'A'
 						break
 					default:
 						return "", ErrMalformedUtf8Encoding
 					}
 					i++
 				}
-				bytes := make([]byte, utf8.RuneLen(rune))
-				bytesWritten := utf8.EncodeRune(bytes, rune)
+				bytes := make([]byte, utf8.RuneLen(rune(utf8rune)))
+				bytesWritten := utf8.EncodeRune(bytes, rune(utf8rune))
 				for j := 0; j < bytesWritten; j++ {
 					out[o] = bytes[j]
 					o++
@@ -224,9 +221,9 @@ func newLineReader(r io.Reader) *lineReader {
 }
 
 // Returns the "logical line" from given reader
-func (lr *lineReader) readLine() (line string, e os.Error) {
+func (lr *lineReader) readLine() (line string, e error) {
 	if lr.exhausted {
-		return "", os.EOF
+		return "", io.EOF
 	}
 	nextCharIndex := 0
 	char := byte(0)
@@ -242,16 +239,16 @@ func (lr *lineReader) readLine() (line string, e os.Error) {
 		if lr.offset >= lr.limit {
 			lr.limit, e = io.ReadFull(lr.reader, lr.buffer)
 			lr.offset = 0
-			if e == os.EOF {
+			if e == io.EOF {
 				lr.exhausted = true
 				if isCommentLine {
-					return "", os.EOF
+					return "", io.EOF
 				}
 				return string(lr.lineBuffer[0:nextCharIndex]), nil
 			}
 			if e == io.ErrUnexpectedEOF {
 				if isCommentLine {
-					return "", os.EOF
+					return "", io.EOF
 				}
 				continue
 			}
@@ -314,7 +311,7 @@ func (lr *lineReader) readLine() (line string, e os.Error) {
 			if lr.offset >= lr.limit {
 				lr.limit, e = io.ReadFull(lr.reader, lr.buffer)
 				lr.offset = 0
-				if e == os.EOF || e == io.ErrUnexpectedEOF {
+				if e == io.EOF || e == io.ErrUnexpectedEOF {
 					lr.exhausted = true
 					return string(lr.lineBuffer[0:nextCharIndex]), nil
 				}
