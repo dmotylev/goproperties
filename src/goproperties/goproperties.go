@@ -63,7 +63,7 @@ import (
 
 // ErrMalformedUtf8Encoding means that it was not possible to convert \uXXXX
 // string to utf8 rune.
-var ErrMalformedUtf8Encoding = errors.New("malformed \\uxxxx encoding")
+var ErrMalformedUtf8Encoding error = errors.New("malformed \\uxxxx encoding")
 
 // Reads key value pairs from reader and returns map[string]string
 func Load(src io.Reader) (props map[string]string, err error) {
