@@ -19,23 +19,23 @@ Install Goproperties using the `go get` command:
 
 Example:
 
-	```go
-	package main
+```go
+package main
 
-	import "github.com/dmotylev/goproperties"
+import "github.com/dmotylev/goproperties"
 
-	func main() {
-		p, _ := properties.Load("credentials")
-		username := p.GetString("username","demo")
-		password := p.GetString("password","demo")
+func main() {
+	p, _ := properties.Load("credentials")
+	username := p.GetString("username","demo")
+	password := p.GetString("password","demo")
 
-		// ... use given credentials
-		
-		_, _ = username, password
-	}
-	```
+	// ... use given credentials
+	
+	_, _ = username, password
+}
+```
 
-Look at [properties_test.go](goproperties/properties_test.go) for more details.
+Look at [properties_test.go](https://github.com/dmotylev/goproperties/blob/master/properties_test.go) for more usage hints.
 
 
 # Dependencies
@@ -56,4 +56,4 @@ Use following `go get` command to install _test_ dependencies:
 
 # License
 
-For the license see [LICENSE](goproperties/LICENSE). 
+For the license see [LICENSE](https://github.com/dmotylev/goproperties/blob/master/LICENSE). 
