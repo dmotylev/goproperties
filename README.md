@@ -2,7 +2,7 @@
 
 # Goproperties
 
-Package goproperties implements read operations of **[.properties](http://en.wikipedia.org/wiki/.properties)** source.
+Package implements read operations of **[.properties](http://en.wikipedia.org/wiki/.properties)** source.
 
 
 # Documentation
@@ -14,6 +14,28 @@ The Goproperties API reference is available on [GoDoc](http://godoc.org/github.c
 Install Goproperties using the `go get` command:
 
 	go get -u github.com/dmotylev/goproperties
+
+# Usage
+
+Example:
+
+	```go
+	package main
+
+	import "github.com/dmotylev/goproperties"
+
+	func main() {
+		p, _ := properties.Load("credentials")
+		username := p.GetString("username","demo")
+		password := p.GetString("password","demo")
+
+		// ... use given credentials
+		
+		_, _ = username, password
+	}
+	```
+
+Look at [properties_test.go](properties_test.go) for more details.
 
 
 # Dependencies
@@ -34,4 +56,4 @@ Use following `go get` command to install _test_ dependencies:
 
 # License
 
-For the license see [LICENSE]. 
+For the license see [LICENSE](LICENSE). 

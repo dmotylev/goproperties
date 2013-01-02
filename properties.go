@@ -74,16 +74,33 @@ localization format into .properties escaping.
 From Wikipedia, the free encyclopedia
 http://en.wikipedia.org/wiki/.properties
 */
-package goproperties
+package properties
 
 import (
 	"errors"
 	"io"
+	"os"
 	"strconv"
 	"unicode/utf8"
 )
 
 type Properties map[string]string
+
+// Creates an instance of Properties and try to fill it with data from file.
+// It's safe to ignore error as method always return pointer to the created
+// instance and close any opened resources.
+func Load(file string) (*Properties, error) {
+	p := &Properties{}
+	f, err := os.Open(file)
+	if err != nil {
+		return p, err
+	}
+	defer f.Close()
+	if err := p.Load(f); err != nil {
+		return p, err
+	}
+	return p, nil
+}
 
 // Uses strconv to convert key's value to bool. Returns def if 
 // conversion failed or key does not exist.

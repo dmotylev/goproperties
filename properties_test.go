@@ -18,12 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package goproperties
+package properties
 
 import (
 	"bytes"
 	. "launchpad.net/gocheck"
 	"math"
+	"os"
 	"testing"
 )
 
@@ -52,6 +53,12 @@ func (s *PropertiesSuite) TestGeneric(c *C) {
 	c.Assert(s.p["message"], Equals, "Welcome to Wikipedia!")
 	c.Assert(s.p["unicode"], Equals, "Привет, Сова!")
 	c.Assert(s.p["key with spaces"], Equals, "This is the value that could be looked up with the key \"key with spaces\".")
+}
+
+func (s *PropertiesSuite) TestLoad(c *C) {
+	p, err := Load(c.MkDir() + string(os.PathSeparator) + "nofile")
+	c.Assert(p, NotNil)
+	c.Assert(err, ErrorMatches, ".*no such file.*")
 }
 
 func (s *PropertiesSuite) TestGetString(c *C) {
