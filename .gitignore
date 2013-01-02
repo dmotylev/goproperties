@@ -1,1 +1,5 @@
-pkg
+*
+!.gitignore
+!.travis.yml
+!README.md
+!*.go
