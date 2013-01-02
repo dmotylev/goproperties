@@ -1,82 +1,157 @@
-// goproperties: This package implements read/write operations on .properties file
+// Copyright (c) 2012 The Goproperties Authors.
 //
-// .properties is a file extension for files mainly used in Java related
-// technologies to store the configurable parameters of an application.
-// They can also be used for storing strings for Internationalization and
-// localization; these are known as Property Resource Bundles.
-//
-// Each parameter is stored as a pair of strings, one storing the name of
-// the parameter (called the key), and the other storing the value.
-//
-// Each line in a .properties file normally stores a single property.
-// Several formats are possible for each line, including key=value,
-// key = value, key:value, and key value.
-//
-// .properties files can use the number sign (#) or the exclamation mark (!)
-// as the first non blank character in a line to denote that all text following
-// it is a comment. The backwards slash is used to escape a character.
-// An example of a properties file is provided below.
-// <code>
-// # You are reading the ".properties" entry.
-// ! The exclamation mark can also mark text as comments.
-// website = http://en.wikipedia.org/
-// language = English
-// # The backslash below tells the application to continue reading
-// # the value onto the next line.
-// message = Welcome to \
-//           Wikipedia!
-// # Add spaces to the key
-// key\ with\ spaces = This is the value that could be looked up with the \
-// key "key with spaces".
-// # Empty lines are skipped
-//
-// # Unicode
-// unicode=\u041f\u0440\u0438\u0432\u0435\u0442, \u0421\u043e\u0432\u0430!
-// # Comment
-// </code>
-//
-// In the example above, website would be a key, and its corresponding
-// value would be http://en.wikipedia.org/. While the number sign and the
-// exclamation mark marks text as comments, it has no effect when it is part
-// of a property. Thus, the key message has the value Welcome to Wikipedia!
-// and not Welcome to Wikipedia. Note also that all of the whitespace in
-// front of Wikipedia! is excluded completely.
-//
-// The encoding of a .properties file is ISO-8859-1, also known as Latin-1.
-// All non-Latin-1 characters must be entered by using Unicode escape characters,
-// e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode
-// character set. This allows for using .properties files as resource bundles for
-// localization. A non-Latin-1 text file can be converted to a correct .properties
-// file by using the native2ascii tool that is shipped with the JDK or by using
-// a tool, such as po2prop, that manages the transformation from a bilingual
-// localization format into .properties escaping.
-//
-// From Wikipedia, the free encyclopedia
-// http://en.wikipedia.org/wiki/.properties
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+/*
+Package goproperties implements read operations on .properties file.
+
+.properties is a file extension for files mainly used in Java related
+technologies to store the configurable parameters of an application.
+They can also be used for storing strings for Internationalization and
+localization; these are known as Property Resource Bundles.
+
+Each parameter is stored as a pair of strings, one storing the name of
+the parameter (called the key), and the other storing the value.
+
+Each line in a .properties file normally stores a single property.
+Several formats are possible for each line, including key=value,
+key = value, key:value, and key value.
+
+.properties files can use the number sign (#) or the exclamation mark (!)
+as the first non blank character in a line to denote that all text following
+it is a comment. The backwards slash is used to escape a character.
+An example of a properties file is provided below.
+
+    # You are reading the ".properties" entry.
+    ! The exclamation mark can also mark text as comments.
+    website = http://en.wikipedia.org/
+    language = English
+    # The backslash below tells the application to continue reading
+    # the value onto the next line.
+    message = Welcome to \
+              Wikipedia!
+    # Add spaces to the key
+    key\ with\ spaces = This is the value that could be looked up with the \
+    key "key with spaces".
+    # Empty lines are skipped
+
+    # Unicode
+    unicode=\u041f\u0440\u0438\u0432\u0435\u0442, \u0421\u043e\u0432\u0430!
+    # Comment
+
+In the example above, website would be a key, and its corresponding
+value would be http://en.wikipedia.org/. While the number sign and the
+exclamation mark marks text as comments, it has no effect when it is part
+of a property. Thus, the key message has the value Welcome to Wikipedia!
+and not Welcome to Wikipedia. Note also that all of the whitespace in
+front of Wikipedia! is excluded completely.
+
+The encoding of a .properties file is ISO-8859-1, also known as Latin-1.
+All non-Latin-1 characters must be entered by using Unicode escape characters,
+e. g. \uHHHH where HHHH is a hexadecimal index of the character in the Unicode
+character set. This allows for using .properties files as resource bundles for
+localization. A non-Latin-1 text file can be converted to a correct .properties
+file by using the native2ascii tool that is shipped with the JDK or by using
+a tool, such as po2prop, that manages the transformation from a bilingual
+localization format into .properties escaping.
+
+From Wikipedia, the free encyclopedia
+http://en.wikipedia.org/wiki/.properties
+*/
 package goproperties
 
 import (
 	"errors"
 	"io"
+	"strconv"
 	"unicode/utf8"
 )
+
+type Properties map[string]string
+
+// Uses strconv to convert key's value to bool. Returns def if 
+// conversion failed or key does not exist.
+func (p *Properties) GetBool(key string, def bool) bool {
+	if v, found := (*p)[key]; found {
+		if b, err := strconv.ParseBool(v); err == nil {
+			return b
+		}
+	}
+	return def
+}
+
+// Uses strconv to convert key's value to float64. Returns def if 
+// conversion failed or key does not exist.
+func (p *Properties) GetFloat(key string, def float64) float64 {
+	if v, found := (*p)[key]; found {
+		if b, err := strconv.ParseFloat(v, 64); err == nil {
+			return b
+		}
+	}
+	return def
+}
+
+// Uses strconv to convert key's value to int64 (base is 0). Returns def if 
+// conversion failed or key does not exist.
+func (p *Properties) GetInt(key string, def int64) int64 {
+	if v, found := (*p)[key]; found {
+		if b, err := strconv.ParseInt(v, 0, 64); err == nil {
+			return b
+		}
+	}
+	return def
+}
+
+// Uses strconv to convert key's value to uint64 (base is 0). Returns def if 
+// conversion failed or key does not exist.
+func (p *Properties) GetUint(key string, def uint64) uint64 {
+	if v, found := (*p)[key]; found {
+		if b, err := strconv.ParseUint(v, 0, 64); err == nil {
+			return b
+		}
+	}
+	return def
+}
+
+// Returns def if key does not exist.
+func (p *Properties) GetString(key string, def string) string {
+	if v, found := (*p)[key]; found {
+		return v
+	}
+	return def
+}
 
 // ErrMalformedUtf8Encoding means that it was not possible to convert \uXXXX
 // string to utf8 rune.
 var ErrMalformedUtf8Encoding error = errors.New("malformed \\uxxxx encoding")
 
 // Reads key value pairs from reader and returns map[string]string
-func Load(src io.Reader) (props map[string]string, err error) {
-	err = nil
+// If source has key already defined then existed value replaced with new one
+func (p *Properties) Load(src io.Reader) error {
 	lr := newLineReader(src)
-	props = make(map[string]string)
 	for {
 		s, e := lr.readLine()
 		if e == io.EOF {
 			break
 		}
 		if e != nil {
-			return nil, e
+			return e
 		}
 
 		keyLen := 0
@@ -118,15 +193,15 @@ func Load(src io.Reader) (props map[string]string, err error) {
 		}
 		key, err := decodeString(s[0:keyLen])
 		if err != nil {
-			return nil, err
+			return err
 		}
 		value, err := decodeString(s[valueStart:len(s)])
 		if err != nil {
-			return nil, err
+			return err
 		}
-		props[key] = value
+		(*p)[key] = value
 	}
-	return props, err
+	return nil
 }
 
 // Decodes \t,\n,\r,\f and \uXXXX characters in string
