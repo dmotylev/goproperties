@@ -35,7 +35,7 @@ Example:
 	}
 	```
 
-Look at [properties_test.go](properties_test.go) for more details.
+Look at [properties_test.go](goproperties/properties_test.go) for more details.
 
 
 # Dependencies
@@ -56,4 +56,4 @@ Use following `go get` command to install _test_ dependencies:
 
 # License
 
-For the license see [LICENSE](LICENSE). 
+For the license see [LICENSE](goproperties/LICENSE). 
