@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/dmotylev/goproperties.png)](https://travis-ci.org/dmotylev/goproperties)
-
-# Goproperties
+# Goproperties [![Build Status](https://travis-ci.org/dmotylev/goproperties.png)](https://travis-ci.org/dmotylev/goproperties)
 
 Package implements read operations of **[.properties](http://en.wikipedia.org/wiki/.properties)** source.
 
