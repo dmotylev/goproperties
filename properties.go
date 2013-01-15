@@ -86,6 +86,13 @@ import (
 
 type Properties map[string]string
 
+// Handy wrapper for Load that returns
+// empty Properties in case of any loading error
+func WantLoad(file string) *Properties {
+	p, _ := Load(file)
+	return p
+}
+
 // Creates an instance of Properties and try to fill it with data from file.
 // It's safe to ignore error as method always return pointer to the created
 // instance and close any opened resources.
