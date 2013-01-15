@@ -55,11 +55,6 @@ func (s *PropertiesSuite) TestGeneric(c *C) {
 	c.Assert(s.p["key with spaces"], Equals, "This is the value that could be looked up with the key \"key with spaces\".")
 }
 
-func (s *PropertiesSuite) TestWantLoad(c *C) {
-	p := WantLoad(c.MkDir() + string(os.PathSeparator) + "nofile")
-	c.Assert(p, NotNil)
-}
-
 func (s *PropertiesSuite) TestLoad(c *C) {
 	p, err := Load(c.MkDir() + string(os.PathSeparator) + "nofile")
 	c.Assert(p, NotNil)
