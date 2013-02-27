@@ -6,10 +6,10 @@
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -89,8 +89,8 @@ type Properties map[string]string
 // Creates an instance of Properties and try to fill it with data from file.
 // It's safe to ignore error as method always return pointer to the created
 // instance and close any opened resources.
-func Load(file string) (*Properties, error) {
-	p := &Properties{}
+func Load(file string) (Properties, error) {
+	p := make(Properties)
 	f, err := os.Open(file)
 	if err != nil {
 		return p, err
@@ -102,10 +102,10 @@ func Load(file string) (*Properties, error) {
 	return p, nil
 }
 
-// Uses strconv to convert key's value to bool. Returns def if 
+// Uses strconv to convert key's value to bool. Returns def if
 // conversion failed or key does not exist.
-func (p *Properties) GetBool(key string, def bool) bool {
-	if v, found := (*p)[key]; found {
+func (p Properties) GetBool(key string, def bool) bool {
+	if v, found := p[key]; found {
 		if b, err := strconv.ParseBool(v); err == nil {
 			return b
 		}
@@ -113,10 +113,10 @@ func (p *Properties) GetBool(key string, def bool) bool {
 	return def
 }
 
-// Uses strconv to convert key's value to float64. Returns def if 
+// Uses strconv to convert key's value to float64. Returns def if
 // conversion failed or key does not exist.
-func (p *Properties) GetFloat(key string, def float64) float64 {
-	if v, found := (*p)[key]; found {
+func (p Properties) GetFloat(key string, def float64) float64 {
+	if v, found := p[key]; found {
 		if b, err := strconv.ParseFloat(v, 64); err == nil {
 			return b
 		}
@@ -124,10 +124,10 @@ func (p *Properties) GetFloat(key string, def float64) float64 {
 	return def
 }
 
-// Uses strconv to convert key's value to int64 (base is 0). Returns def if 
+// Uses strconv to convert key's value to int64 (base is 0). Returns def if
 // conversion failed or key does not exist.
-func (p *Properties) GetInt(key string, def int64) int64 {
-	if v, found := (*p)[key]; found {
+func (p Properties) GetInt(key string, def int64) int64 {
+	if v, found := p[key]; found {
 		if b, err := strconv.ParseInt(v, 0, 64); err == nil {
 			return b
 		}
@@ -135,10 +135,10 @@ func (p *Properties) GetInt(key string, def int64) int64 {
 	return def
 }
 
-// Uses strconv to convert key's value to uint64 (base is 0). Returns def if 
+// Uses strconv to convert key's value to uint64 (base is 0). Returns def if
 // conversion failed or key does not exist.
-func (p *Properties) GetUint(key string, def uint64) uint64 {
-	if v, found := (*p)[key]; found {
+func (p Properties) GetUint(key string, def uint64) uint64 {
+	if v, found := p[key]; found {
 		if b, err := strconv.ParseUint(v, 0, 64); err == nil {
 			return b
 		}
@@ -147,8 +147,8 @@ func (p *Properties) GetUint(key string, def uint64) uint64 {
 }
 
 // Returns def if key does not exist.
-func (p *Properties) GetString(key string, def string) string {
-	if v, found := (*p)[key]; found {
+func (p Properties) GetString(key string, def string) string {
+	if v, found := p[key]; found {
 		return v
 	}
 	return def
@@ -160,7 +160,7 @@ var ErrMalformedUtf8Encoding error = errors.New("malformed \\uxxxx encoding")
 
 // Reads key value pairs from reader and returns map[string]string
 // If source has key already defined then existed value replaced with new one
-func (p *Properties) Load(src io.Reader) error {
+func (p Properties) Load(src io.Reader) error {
 	lr := newLineReader(src)
 	for {
 		s, e := lr.readLine()
@@ -216,7 +216,7 @@ func (p *Properties) Load(src io.Reader) error {
 		if err != nil {
 			return err
 		}
-		(*p)[key] = value
+		p[key] = value
 	}
 	return nil
 }

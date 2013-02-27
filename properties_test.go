@@ -1,15 +1,15 @@
 // Copyright (c) 2012 The Goproperties Authors.
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,12 +39,12 @@ var _ = Suite(&PropertiesSuite{})
 
 func (s *PropertiesSuite) SetUpTest(c *C) {
 	r := bytes.NewReader([]byte(source))
-	p := &Properties{}
+	p := make(Properties)
 	err := p.Load(r)
 	if err != nil {
 		c.Fatalf("failed to load properties: %s", err)
 	}
-	s.p = *p
+	s.p = p
 }
 
 func (s *PropertiesSuite) TestGeneric(c *C) {
