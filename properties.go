@@ -80,6 +80,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"regexp"
 	"strconv"
 	"unicode/utf8"
 )
@@ -152,6 +153,18 @@ func (p Properties) GetString(key string, def string) string {
 		return v
 	}
 	return def
+}
+
+// Returns a new Properties with a selection of properties for which the key matches a regular expression pattern
+func (p Properties) SelectProperties(pattern string) Properties {
+	selection := make(Properties)
+	matcher := regexp.MustCompile(pattern)
+	for k, v := range p {
+		if matcher.MatchString(k) {
+			selection[k] = v
+		}
+	}
+	return selection
 }
 
 // ErrMalformedUtf8Encoding means that it was not possible to convert \uXXXX
@@ -301,11 +314,13 @@ type lineReader struct {
 	exhausted  bool
 }
 
+var ReaderLineBufferSize = 1024
+
 func newLineReader(r io.Reader) *lineReader {
 	n := new(lineReader)
 	n.reader = r
-	n.buffer = make([]byte, 1024)
-	n.lineBuffer = make([]byte, 1024)
+	n.buffer = make([]byte, ReaderLineBufferSize)
+	n.lineBuffer = make([]byte, ReaderLineBufferSize)
 	n.limit = 0
 	n.offset = 0
 	n.exhausted = false

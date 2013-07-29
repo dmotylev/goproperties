@@ -2,5 +2,6 @@
 !.gitignore
 !.travis.yml
 !README.md
+!FORK.md
 !LICENSE
 !*.go
