@@ -104,7 +104,7 @@ func Load(file string) (Properties, error) {
 
 // Uses strconv to convert key's value to bool. Returns def if
 // conversion failed or key does not exist.
-func (p Properties) GetBool(key string, def bool) bool {
+func (p Properties) Bool(key string, def bool) bool {
 	if v, found := p[key]; found {
 		if b, err := strconv.ParseBool(v); err == nil {
 			return b
@@ -115,7 +115,7 @@ func (p Properties) GetBool(key string, def bool) bool {
 
 // Uses strconv to convert key's value to float64. Returns def if
 // conversion failed or key does not exist.
-func (p Properties) GetFloat(key string, def float64) float64 {
+func (p Properties) Float(key string, def float64) float64 {
 	if v, found := p[key]; found {
 		if b, err := strconv.ParseFloat(v, 64); err == nil {
 			return b
@@ -126,7 +126,7 @@ func (p Properties) GetFloat(key string, def float64) float64 {
 
 // Uses strconv to convert key's value to int64 (base is 0). Returns def if
 // conversion failed or key does not exist.
-func (p Properties) GetInt(key string, def int64) int64 {
+func (p Properties) Int(key string, def int64) int64 {
 	if v, found := p[key]; found {
 		if b, err := strconv.ParseInt(v, 0, 64); err == nil {
 			return b
@@ -137,7 +137,7 @@ func (p Properties) GetInt(key string, def int64) int64 {
 
 // Uses strconv to convert key's value to uint64 (base is 0). Returns def if
 // conversion failed or key does not exist.
-func (p Properties) GetUint(key string, def uint64) uint64 {
+func (p Properties) Uint(key string, def uint64) uint64 {
 	if v, found := p[key]; found {
 		if b, err := strconv.ParseUint(v, 0, 64); err == nil {
 			return b
@@ -147,7 +147,7 @@ func (p Properties) GetUint(key string, def uint64) uint64 {
 }
 
 // Returns def if key does not exist.
-func (p Properties) GetString(key string, def string) string {
+func (p Properties) String(key string, def string) string {
 	if v, found := p[key]; found {
 		return v
 	}
@@ -384,9 +384,7 @@ func (lr *lineReader) readLine() (line string, e error) {
 			nextCharIndex++
 			if nextCharIndex == len(lr.lineBuffer) {
 				newBuffer := make([]byte, len(lr.lineBuffer)*2)
-				for i, x := range lr.lineBuffer {
-					newBuffer[i] = x
-				}
+				copy(lr.lineBuffer, newBuffer)
 				lr.lineBuffer = newBuffer
 			}
 			//flip the preceding backslash flag
@@ -426,6 +424,4 @@ func (lr *lineReader) readLine() (line string, e error) {
 			}
 		}
 	}
-
-	return "", nil
 }

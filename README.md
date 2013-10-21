@@ -28,7 +28,7 @@ func main() {
 	password := p.GetString("password","demo")
 
 	// ... use given credentials
-	
+
 	_, _ = username, password
 }
 ```
@@ -49,9 +49,9 @@ The _test_ part depends on **[gocheck](http://labix.org/gocheck)** package.
 
 Use following `go get` command to install _test_ dependencies:
 
-	go get -u http://labix.org/gocheck
+	go get -u launchpad.net/gocheck
 
 
 # License
 
-For the license see [LICENSE](https://github.com/dmotylev/goproperties/blob/master/LICENSE). 
+For the license see [LICENSE](https://github.com/dmotylev/goproperties/blob/master/LICENSE).

@@ -32,7 +32,7 @@ import (
 func Test(t *testing.T) { TestingT(t) }
 
 type PropertiesSuite struct {
-	p Properties
+	p       Properties
 }
 
 var _ = Suite(&PropertiesSuite{})
@@ -61,31 +61,31 @@ func (s *PropertiesSuite) TestLoad(c *C) {
 	c.Assert(err, ErrorMatches, ".*no such file.*")
 }
 
-func (s *PropertiesSuite) TestGetString(c *C) {
-	c.Assert(s.p.GetString("string", "not found"), Equals, "found")
-	c.Assert(s.p.GetString("missed", "not found"), Equals, "not found")
+func (s *PropertiesSuite) TestString(c *C) {
+	c.Assert(s.p.String("string", "not found"), Equals, "found")
+	c.Assert(s.p.String("missed", "not found"), Equals, "not found")
 }
 
-func (s *PropertiesSuite) TestGetBool(c *C) {
-	c.Assert(s.p.GetBool("bool", false), Equals, true)
-	c.Assert(s.p.GetBool("missed", true), Equals, true)
+func (s *PropertiesSuite) TestBool(c *C) {
+	c.Assert(s.p.Bool("bool", false), Equals, true)
+	c.Assert(s.p.Bool("missed", true), Equals, true)
 }
 
-func (s *PropertiesSuite) TestGetFloat(c *C) {
-	c.Assert(s.p.GetFloat("float", math.MaxFloat64), Equals, math.SmallestNonzeroFloat64)
-	c.Assert(s.p.GetFloat("missed", math.MaxFloat64), Equals, math.MaxFloat64)
+func (s *PropertiesSuite) TestFloat(c *C) {
+	c.Assert(s.p.Float("float", math.MaxFloat64), Equals, math.SmallestNonzeroFloat64)
+	c.Assert(s.p.Float("missed", math.MaxFloat64), Equals, math.MaxFloat64)
 }
 
-func (s *PropertiesSuite) TestGetInt(c *C) {
-	c.Assert(s.p.GetInt("int", math.MaxInt64), Equals, int64(math.MinInt64))
-	c.Assert(s.p.GetInt("missed", math.MaxInt64), Equals, int64(math.MaxInt64))
-	c.Assert(s.p.GetInt("hex", 0xCAFEBABE), Equals, int64(0xCAFEBABE))
+func (s *PropertiesSuite) TestInt(c *C) {
+	c.Assert(s.p.Int("int", math.MaxInt64), Equals, int64(math.MinInt64))
+	c.Assert(s.p.Int("missed", math.MaxInt64), Equals, int64(math.MaxInt64))
+	c.Assert(s.p.Int("hex", 0xCAFEBABE), Equals, int64(0xCAFEBABE))
 }
 
-func (s *PropertiesSuite) TestGetUint(c *C) {
-	c.Assert(s.p.GetUint("uint", 42), Equals, uint64(math.MaxUint64))
-	c.Assert(s.p.GetUint("missed", 42), Equals, uint64(42))
-	c.Assert(s.p.GetUint("hex", 0xCAFEBABE), Equals, uint64(0xCAFEBABE))
+func (s *PropertiesSuite) TestUint(c *C) {
+	c.Assert(s.p.Uint("uint", 42), Equals, uint64(math.MaxUint64))
+	c.Assert(s.p.Uint("missed", 42), Equals, uint64(42))
+	c.Assert(s.p.Uint("hex", 0xCAFEBABE), Equals, uint64(0xCAFEBABE))
 }
 
 const source = `
