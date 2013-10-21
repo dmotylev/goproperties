@@ -24,8 +24,8 @@ import "github.com/dmotylev/goproperties"
 
 func main() {
 	p, _ := properties.Load("credentials")
-	username := p.GetString("username","demo")
-	password := p.GetString("password","demo")
+	username := p.String("username","demo")
+	password := p.String("password","demo")
 
 	// ... use given credentials
 
