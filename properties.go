@@ -339,9 +339,6 @@ func (lr *lineReader) readLine() (line string, e error) {
 				return string(lr.lineBuffer[0:nextCharIndex]), nil
 			}
 			if e == io.ErrUnexpectedEOF {
-				if isCommentLine {
-					return "", io.EOF
-				}
 				continue
 			}
 			if e != nil {
