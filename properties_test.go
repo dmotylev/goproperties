@@ -104,6 +104,13 @@ func (s *PropertiesSuite) Test1024Comment(c *C) {
 	c.Assert(p.String("c", "not found"), Equals, "d")
 }
 
+func (s *PropertiesSuite) TestGetSelection(c *C) {
+	selection := s.p.SelectProperties(".*int")
+	c.Assert(selection.GetUint("uint", 42), Equals, uint64(math.MaxUint64))
+	c.Assert(selection.GetInt("int", math.MaxInt64), Equals, int64(math.MinInt64))
+	c.Assert(len(selection), Equals, 2)
+}
+
 const source = `
 # You are reading the ".properties" entry.
 ! The exclamation mark can also mark text as comments.
