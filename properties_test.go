@@ -22,17 +22,17 @@ package properties
 
 import (
 	"bytes"
-	. "launchpad.net/gocheck"
 	"math"
 	"os"
 	"testing"
+	. "launchpad.net/gocheck"
 )
 
 // Hook up gocheck into the gotest runner.
 func Test(t *testing.T) { TestingT(t) }
 
 type PropertiesSuite struct {
-	p       Properties
+	p Properties
 }
 
 var _ = Suite(&PropertiesSuite{})
@@ -86,6 +86,22 @@ func (s *PropertiesSuite) TestUint(c *C) {
 	c.Assert(s.p.Uint("uint", 42), Equals, uint64(math.MaxUint64))
 	c.Assert(s.p.Uint("missed", 42), Equals, uint64(42))
 	c.Assert(s.p.Uint("hex", 0xCAFEBABE), Equals, uint64(0xCAFEBABE))
+}
+
+// Test1024Comment verifies that if the lineReader is in the middle
+// of parsing a comment when it goes to read the last < 1024 byte block,
+// it doesn't get confused and return EOF.
+func (s *PropertiesSuite) Test1024Comment(c *C) {
+	config := "a = b\n"
+	for i := 0; i < 1024; i++ {
+		config += "#"
+	}
+	config += "\nc = d\n"
+
+	p := make(Properties)
+	p.Load(bytes.NewReader([]byte(config)))
+	c.Assert(p.String("a", "not found"), Equals, "b")
+	c.Assert(p.String("c", "not found"), Equals, "d")
 }
 
 const source = `
