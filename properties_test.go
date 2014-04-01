@@ -25,6 +25,7 @@ import (
 	"math"
 	"os"
 	"testing"
+	"time"
 	. "launchpad.net/gocheck"
 )
 
@@ -88,6 +89,11 @@ func (s *PropertiesSuite) TestUint(c *C) {
 	c.Assert(s.p.Uint("hex", 0xCAFEBABE), Equals, uint64(0xCAFEBABE))
 }
 
+func (s *PropertiesSuite) TestDuration(c *C) {
+	c.Assert(s.p.Duration("duration", 42), Equals, 10*time.Millisecond)
+	c.Assert(s.p.Duration("missed", 42), Equals, time.Duration(42))
+}
+
 // Test1024Comment verifies that if the lineReader is in the middle
 // of parsing a comment when it goes to read the last < 1024 byte block,
 // it doesn't get confused and return EOF.
@@ -128,4 +134,5 @@ float=4.940656458412465441765687928682213723651e-324
 int=-9223372036854775808
 uint=18446744073709551615
 hex=0xCAFEBABE
+duration=10ms
 `

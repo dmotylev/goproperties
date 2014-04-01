@@ -81,6 +81,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"time"
 	"unicode/utf8"
 )
 
@@ -150,6 +151,16 @@ func (p Properties) Uint(key string, def uint64) uint64 {
 func (p Properties) String(key string, def string) string {
 	if v, found := p[key]; found {
 		return v
+	}
+	return def
+}
+
+// Returns def if key does not exist.
+func (p Properties) Duration(key string, def time.Duration) time.Duration {
+	if v, found := p[key]; found {
+		if b, err := time.ParseDuration(v); err == nil {
+			return b
+		}
 	}
 	return def
 }
