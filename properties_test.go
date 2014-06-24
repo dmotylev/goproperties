@@ -22,10 +22,10 @@ package properties
 
 import (
 	"bytes"
+	. "launchpad.net/gocheck"
 	"math"
 	"os"
 	"testing"
-	. "launchpad.net/gocheck"
 )
 
 // Hook up gocheck into the gotest runner.
