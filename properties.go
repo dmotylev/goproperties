@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Goproperties Authors.
+// Copyright (c) 2012-2014 The Goproperties Authors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal in
@@ -398,13 +398,9 @@ func (lr *lineReader) readLine() (line string, e error) {
 			if lr.offset >= lr.limit {
 				lr.limit, e = io.ReadFull(lr.reader, lr.buffer)
 				lr.offset = 0
-				if e == io.EOF || e == io.ErrUnexpectedEOF {
-					lr.exhausted = true
-					return string(lr.lineBuffer[0:nextCharIndex]), nil
-				}
 				if e != nil {
 					lr.exhausted = true
-					return "", e
+					return string(lr.lineBuffer[0:nextCharIndex]), nil
 				}
 			}
 			if precedingBackslash {

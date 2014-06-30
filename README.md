@@ -36,22 +36,6 @@ func main() {
 Look at [properties_test.go](https://github.com/dmotylev/goproperties/blob/master/properties_test.go) for more usage hints.
 
 
-# Dependencies
-
-## Main functionality
-
-The _main_ part depends on the Go distribution only.
-
-
-## Test functionality
-
-The _test_ part depends on **[gocheck](http://labix.org/gocheck)** package.
-
-Use following `go get` command to install _test_ dependencies:
-
-	go get -u launchpad.net/gocheck
-
-
 # License
 
 For the license see [LICENSE](https://github.com/dmotylev/goproperties/blob/master/LICENSE).
